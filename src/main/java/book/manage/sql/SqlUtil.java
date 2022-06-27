@@ -17,13 +17,18 @@ public class SqlUtil {
     private SqlUtil(){}
 
     private static SqlSessionFactory factory;
+
+    //静态代码块只执行一次，创建一次factory
     static {
         try {
             factory = new SqlSessionFactoryBuilder().build(Resources.getResourceAsReader("mybatis-config.xml"));
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
+
+    //Consumer是lambda表达式中的一个接口
     public static void doSqlWork(Consumer<BookMapper> consumer){
         try(SqlSession sqlSession = factory.openSession(true)){
             BookMapper bookMapper = sqlSession.getMapper(BookMapper.class);
