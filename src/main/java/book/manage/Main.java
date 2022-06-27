@@ -21,10 +21,13 @@ public class Main {
             manager.readConfiguration(Resources.getResourceAsStream("logging.properties"));
 
             while (true) {
-                System.out.println("===============================================");
+                System.out.println("=================================================================");
                 System.out.println("1.录入学生信息");
                 System.out.println("2.录入书籍信息");
                 System.out.println("3.添加借阅信息");
+                System.out.println("4.查询借阅信息");
+                System.out.println("5.查询学生信息");
+                System.out.println("6.查询书籍信息");
                 System.out.print("输入你想要执行的操作（输入其他任意数字退出）：");
                 int input;
                 try {
@@ -45,7 +48,19 @@ public class Main {
                         try{addBorrow(scanner);}
                         catch(Exception e){
                             System.out.println("录入失败！（可能录入重复）");
-                            break;}
+                        }
+                        finally {
+                            break;
+                        }
+                    case 4:
+                        showBorrow(scanner);
+                        break;
+                    case 5:
+                        showStudent(scanner);
+                        break;
+                    case 6:
+                        showBook(scanner);
+                        break;
                     default:
                         return;
                 }
@@ -53,8 +68,36 @@ public class Main {
         }
     }
 
-    private static void showBorrow(){
+    //显示全部学生信息
+    private static void showStudent(Scanner scanner){
+        //不输入直接显示全部
+        SqlUtil.doSqlWork(mapper ->{
+            mapper.getStudentList().forEach(student -> {
+                System.out.println(student.getSid()+"."+student.getName()+" "+student.getSex()+" "+student.getGrade());
+            });
+        });
+    }
 
+
+    //显示全部书籍信息
+    private static void showBook(Scanner scanner){
+        //不输入直接显示全部
+        SqlUtil.doSqlWork(mapper ->{
+            mapper.getBookList().forEach(book -> {
+                System.out.println(book.getBid()+"."+book.getTitle()+"["+book.getPrice()+"]"+"("+book.getDesc()+")");
+            });
+        });
+    }
+
+
+    //显示全部借阅信息
+    private static void showBorrow(Scanner scanner){
+        //不输入直接显示全部
+        SqlUtil.doSqlWork(mapper ->{
+            mapper.getBorrowList().forEach(borrow -> {
+                    System.out.println(borrow.getStudent().getName()+" -> "+borrow.getBook().getTitle());
+            });
+        });
     }
 
     //借书
